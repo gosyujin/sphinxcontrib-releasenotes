@@ -21,8 +21,8 @@ class ReleasenotesDirective(Directive):
     def run(self):
         print self.options
         res = releasenotes('')
-        res['sur'] = self.options['sur']
-        res['app'] = self.options['app']
+        res['sur'] = self.options.get('sur', '')
+        res['app'] = self.options.get('app', '')
         return [res]
 
 

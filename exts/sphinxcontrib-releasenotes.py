@@ -41,14 +41,14 @@ def visit_html_releasenotes(self, node):
 
     list = []
     commit = {}
-    commit_log = ""
+    commit_log = ''
     for log in stdout:
         match = re.match('commit', log)
         if not match == None:
-            commit['log'] = commit_log + '</pre>'
+            commit['log'] = commit_log
             list.append(commit)
             commit = {}
-            commit_log = "<pre>"
+            commit_log = ''
 
             commit['hash'] = log[match.end() + 1:match.end() + 8]
 
@@ -89,7 +89,7 @@ def visit_html_releasenotes(self, node):
                         for log in stdout:
                             commit_log = log
 
-    commit['log'] = commit_log + '</pre>'
+    commit['log'] = commit_log
     list.append(commit)
     del list[0]
 
@@ -139,7 +139,7 @@ def insert_release_note(list, tag_only):
             html_content.append('<tr>')
             html_content.append('<td>%s</td>' % i['hash'].decode('utf-8'))
             html_content.append('<td>%s</td>' % i['date'].decode('utf-8'))
-            html_content.append('<td>%s</td>' % i['log'].decode('utf-8'))
+            html_content.append('<td><pre>%s</pre></td>' % i['log'].decode('utf-8'))
             html_content.append('<td>%s</td>' % i['author'].decode('utf-8'))
             html_content.append('<td>%s</td>' % i['survey'])
             html_content.append('<td>%s</td>' % i['approval'])

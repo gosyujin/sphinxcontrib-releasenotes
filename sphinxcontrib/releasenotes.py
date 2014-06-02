@@ -14,18 +14,20 @@ class releasenotes(nodes.General, nodes.Element):
 class ReleasenotesDirective(Directive):
     has_content = True
     option_spec = {
+        'lang': unicode,
         'tag_only': int,
         'sur': unicode,
         'app': unicode
     }
 
     def run(self):
-        print self.options
+        print '[sphinxcontrib-releasenotes] args: %s' % self.options
         res = releasenotes('')
         if self.options.get('tag_only', 0) == 0:
             res['tag_only'] = False
         else:
             res['tag_only'] = True
+        res['lang'] = self.options.get('lang', '')
         res['sur'] = self.options.get('sur', '')
         res['app'] = self.options.get('app', '')
         return [res]
@@ -93,7 +95,14 @@ def visit_html_releasenotes(self, node):
     list.append(commit)
     del list[0]
 
-    self.body += insert_release_note(list, node['tag_only'])
+    lang = self.builder.config.language
+    lang_log = '- searched at conf.py DEFAULT en'
+    if node['lang'] != '':
+        lang = node['lang']
+        lang_log = '- overwrite releasenotes directive :lang:'
+
+    print '[sphinxcontrib-releasenotes] lang: %s %s' % (lang, lang_log)
+    self.body += insert_release_note(list, node['tag_only'], lang)
 
 
 def depart_releasenotes(self, node):
@@ -106,20 +115,39 @@ def setup(app):
 
     app.add_directive('releasenotes', ReleasenotesDirective)
 
-def insert_release_note(list, tag_only):
+def insert_release_note(list, tag_only, lang):
+    thead = {}
+    if lang == 'ja':
+        thead['headline'] = u'変更履歴'
+        thead['revision'] = u'リビジョン'
+        thead['date'] = u'日付'
+        thead['commit_log'] = u'変更内容'
+        thead['author'] = u'作成者'
+        thead['survey'] = u'調査者'
+        thead['approval'] = u'承認者'
+    else:
+        thead['headline'] = u'ReleaseNote'
+        thead['revision'] = u'Revision'
+        thead['date'] = u'Date'
+        thead['commit_log'] = u'Commit log'
+        thead['author'] = u'Author'
+        thead['survey'] = u'Survey'
+        thead['approval'] = u'Approval'
+
+
     html_content = []
     html_content.append('<div class="section" id="release_notes">')
     html_content.append('<h2>')
-    html_content.append(u'Release Note')
+    html_content.append('%s' % thead['headline'])
     html_content.append(u'<a class="headerlink" href="#release_notes" title="Permalink to this headline">¶</a>')
     html_content.append('</h2>')
     html_content.append('<table border="1" class="docutils"><thead valign="bottom"><tr>')
-    html_content.append(u'<th class="head">Revision</th>')
-    html_content.append(u'<th class="head">Date</th>')
-    html_content.append(u'<th class="head">Commit log</th>')
-    html_content.append(u'<th class="head">Author</th>')
-    html_content.append(u'<th class="head">Survey</th>')
-    html_content.append(u'<th class="head">Approval</th>')
+    html_content.append(u'<th class="head">%s</th>' % thead['revision'])
+    html_content.append(u'<th class="head">%s</th>' % thead['date'])
+    html_content.append(u'<th class="head">%s</th>' % thead['commit_log'])
+    html_content.append(u'<th class="head">%s</th>' % thead['author'])
+    html_content.append(u'<th class="head">%s</th>' % thead['survey'])
+    html_content.append(u'<th class="head">%s</th>' % thead['approval'])
     html_content.append('</tr></thead><tbody valign="top">')
     for i in list:
         if tag_only == True:

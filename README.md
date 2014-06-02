@@ -3,6 +3,16 @@ sphinxcontrib-releasenotes
 
 Sphinx 拡張 + Sphinxを導入するためのあれこれ
 
+setting
+-------
+
+append `conf.py`
+
+..
+
+   extensions += ['sphinxcontrib.releasenotes']
+
+
 example
 -------
 

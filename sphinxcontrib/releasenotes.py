@@ -106,7 +106,6 @@ def setup(app):
 
     app.add_directive('releasenotes', ReleasenotesDirective)
 
-
 def insert_release_note(list, tag_only):
     html_content = []
     html_content.append('<div class="section" id="release_notes">')
@@ -130,7 +129,7 @@ def insert_release_note(list, tag_only):
                 html_content.append('<tr>')
                 html_content.append('<td>%s</td>' % i['tag'].decode('utf-8'))
                 html_content.append('<td>%s</td>' % i['date'].decode('utf-8'))
-                html_content.append('<td>%s</td>' % i['log'].decode('utf-8'))
+                html_content.append('<td><pre>%s</pre></td>' % i['log'].decode('utf-8'))
                 html_content.append('<td>%s</td>' % i['author'].decode('utf-8'))
                 html_content.append('<td>%s</td>' % i['survey'])
                 html_content.append('<td>%s</td>' % i['approval'])

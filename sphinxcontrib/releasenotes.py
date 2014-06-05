@@ -134,14 +134,31 @@ def insert_release_note(list, tag_only, lang):
         thead['survey'] = u'Survey'
         thead['approval'] = u'Approval'
 
+    js = '''
+    <script type="text/javascript">
+         $(function(){
+              $("#releasenotes").on("click", 'p', function(){
+                  var selector = ".releasenotes-diff-" + $(this).data("n");
+                  $(selector).slideToggle("slow");
+              });
+         });
+    </script>
+    '''
+    css = '''
+    <style type="text/css">
+        [class*="releasenotes-diff"] { display:none; }
+    </style>
+    '''
 
     html_content = []
+    html_content.append(js)
+    html_content.append(css)
     html_content.append('<div class="section" id="release_notes">')
     html_content.append('<h2>')
     html_content.append('%s' % thead['headline'])
     html_content.append(u'<a class="headerlink" href="#release_notes" title="Permalink to this headline">¶</a>')
     html_content.append('</h2>')
-    html_content.append('<table border="1" class="docutils"><thead valign="bottom"><tr>')
+    html_content.append('<table border="1" id="releasenotes" class="docutils"><thead valign="bottom"><tr>')
     html_content.append(u'<th class="head">%s</th>' % thead['revision'])
     html_content.append(u'<th class="head">%s</th>' % thead['date'])
     html_content.append(u'<th class="head">%s</th>' % thead['commit_log'])
@@ -149,27 +166,46 @@ def insert_release_note(list, tag_only, lang):
     html_content.append(u'<th class="head">%s</th>' % thead['survey'])
     html_content.append(u'<th class="head">%s</th>' % thead['approval'])
     html_content.append('</tr></thead><tbody valign="top">')
-    for i in list:
+
+    i = 0
+    for l in list:
+        i += 1
         if tag_only == True:
-            if i['tag'] == '':
+            if l['tag'] == '':
                 pass
             else:
                 html_content.append('<tr>')
-                html_content.append('<td>%s</td>' % i['tag'].decode('utf-8'))
-                html_content.append('<td>%s</td>' % i['date'].decode('utf-8'))
-                html_content.append('<td><pre>%s</pre></td>' % i['log'].decode('utf-8'))
-                html_content.append('<td>%s</td>' % i['author'].decode('utf-8'))
-                html_content.append('<td>%s</td>' % i['survey'])
-                html_content.append('<td>%s</td>' % i['approval'])
+                html_content.append('<td>%s</td>' % l['tag'].decode('utf-8'))
+                html_content.append('<td>%s</td>' % l['date'].decode('utf-8'))
+
+                html_content.append('<td>')
+                html_content.append('<pre>%s</pre>' % l['log'].decode('utf-8'))
+                html_content.append('<p data-n="%s">diff</p>' % i)
+                html_content.append('<div class="releasenotes-diff-%s">' % i)
+                html_content.append('<pre>diff area</pre>' % i)
+                html_content.append('</div>')
+                html_content.append('</td>')
+
+                html_content.append('<td>%s</td>' % l['author'].decode('utf-8'))
+                html_content.append('<td>%s</td>' % l['survey'])
+                html_content.append('<td>%s</td>' % l['approval'])
                 html_content.append('</tr>')
         else:
             html_content.append('<tr>')
-            html_content.append('<td>%s</td>' % i['hash'].decode('utf-8'))
-            html_content.append('<td>%s</td>' % i['date'].decode('utf-8'))
-            html_content.append('<td><pre>%s</pre></td>' % i['log'].decode('utf-8'))
-            html_content.append('<td>%s</td>' % i['author'].decode('utf-8'))
-            html_content.append('<td>%s</td>' % i['survey'])
-            html_content.append('<td>%s</td>' % i['approval'])
+            html_content.append('<td>%s</td>' % l['hash'].decode('utf-8'))
+            html_content.append('<td>%s</td>' % l['date'].decode('utf-8'))
+
+            html_content.append('<td>')
+            html_content.append('<pre>%s</pre>' % l['log'].decode('utf-8'))
+            html_content.append('<p data-n="%s">[show diff]</p>' % i)
+            html_content.append('<div class="releasenotes-diff-%s">' % i)
+            html_content.append('<pre>diff area %s</pre>' % i)
+            html_content.append('</div>')
+            html_content.append('</td>')
+
+            html_content.append('<td>%s</td>' % l['author'].decode('utf-8'))
+            html_content.append('<td>%s</td>' % l['survey'])
+            html_content.append('<td>%s</td>' % l['approval'])
             html_content.append('</tr>')
     html_content.append('</tbody></table>')
     html_content.append('</div>')

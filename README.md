@@ -10,8 +10,12 @@ append `conf.py`
 
 ..
 
-   extensions += ['sphinxcontrib.releasenotes']
-
+try:
+    import sphinxcontrib.releasenotes
+    sys.path.append(os.path.abspath('exts/sphinxcontrib-releasenotes/'))
+    extensions += ['sphinxcontrib.releasenotes']
+except:
+    pass
 
 example
 -------

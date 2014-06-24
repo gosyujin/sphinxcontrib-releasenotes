@@ -5,7 +5,16 @@ Sphinx 拡張 + Sphinxを導入するためのあれこれ
 
 ## setting
 
-append `conf.py`
+- clone
+
+```
+$ cd SPHINX_PROJECT/source
+$ mkdir exts
+$ cd exts
+$ git clone https://github.com/gosyujin/sphinxcontrib-releasenotes.git
+```
+
+- append `conf.py`
 
 ```python
 try:

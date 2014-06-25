@@ -18,8 +18,8 @@ $ git clone https://github.com/gosyujin/sphinxcontrib-releasenotes.git
 
 ```python
 try:
-    import sphinxcontrib.releasenotes
     sys.path.append(os.path.abspath('exts/sphinxcontrib-releasenotes/'))
+    import sphinxcontrib.releasenotes
     extensions += ['sphinxcontrib.releasenotes']
 except:
     pass

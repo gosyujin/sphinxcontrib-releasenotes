@@ -18,9 +18,9 @@ $ git clone https://github.com/gosyujin/sphinxcontrib-releasenotes.git
 
 ```python
 try:
-    sys.path.append(os.path.abspath('exts/sphinxcontrib-releasenotes/'))
-    import sphinxcontrib.releasenotes
-    extensions += ['sphinxcontrib.releasenotes']
+    sys.path.append(os.path.abspath('exts/sphinxcontrib-releasenotes/sphinxcontrib'))
+    import releasenotes
+    extensions += ['releasenotes']
 except:
     pass
 ```

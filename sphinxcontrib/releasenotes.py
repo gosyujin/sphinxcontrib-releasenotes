@@ -54,6 +54,12 @@ def visit_html_releasenotes(self, node):
 
             commit['hash'] = log[match.end() + 1:match.end() + 8]
 
+            commit['diff'] = ''
+            git_command = 'git diff %s~..%s' % (commit['hash'], commit['hash'])
+            stdout, stdin, stderr = popen2.popen3(git_command)
+            for log in stdout:
+                commit['diff'] += log
+
             # match tag
             # 1. tag: refs/tags/TAG)
             # 2. tag: refs/tags/TAG, refs/xxx/xxx .. )
@@ -182,7 +188,10 @@ def insert_release_note(list, tag_only, lang):
                 html_content.append('<pre>%s</pre>' % l['log'].decode('utf-8'))
                 html_content.append('<p data-n="%s">diff</p>' % i)
                 html_content.append('<div class="releasenotes-diff-%s">' % i)
-                html_content.append('<pre>diff area</pre>' % i)
+                try:
+                    html_content.append('<pre>%s</pre>' % l['diff'].decode('utf-8'))
+                except UnicodeDecodeError:
+                    html_content.append('<pre>UnicodeDecodeError %s</pre>' % i)
                 html_content.append('</div>')
                 html_content.append('</td>')
 
@@ -199,7 +208,10 @@ def insert_release_note(list, tag_only, lang):
             html_content.append('<pre>%s</pre>' % l['log'].decode('utf-8'))
             html_content.append('<p data-n="%s">[show diff]</p>' % i)
             html_content.append('<div class="releasenotes-diff-%s">' % i)
-            html_content.append('<pre>diff area %s</pre>' % i)
+            try:
+                html_content.append('<pre>%s</pre>' % l['diff'].decode('utf-8'))
+            except UnicodeDecodeError:
+                html_content.append('<pre>UnicodeDecodeError %s</pre>' % i)
             html_content.append('</div>')
             html_content.append('</td>')
 
